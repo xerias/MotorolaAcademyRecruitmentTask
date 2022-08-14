@@ -1,8 +1,6 @@
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class main {
@@ -14,10 +12,12 @@ public class main {
         EASY,
         HARD
     }
-
+//==================================================================================================================
     public main() {
         Difficulty difficulty = null;
-        ArrayList<String> words;
+        ArrayList<String> words=null   ;
+        ArrayList<String> aWords=new ArrayList<String>(16); //random words
+        ArrayList<String> bWords=new ArrayList<String>(16); //random words
         //String absolutePathtoFile = "C:\\Users\\Dell\\Documents\\Motorola - recruitment task Java\\words.txt";
         String relativePathToFile = "words.txt";
 
@@ -29,9 +29,25 @@ public class main {
         }
 
         difficulty=setDiffculty(); // with user response
-
+        switch (difficulty) {
+            case EASY:{
+                Collections.shuffle(words);
+                for (int i=0;i<9;i++){
+                    aWords.add(words.get(i));
+                }
+            }break;
+            case HARD:{
+                Collections.shuffle(words);
+                for (int i=0;i<16;i++){
+                    aWords.add(words.get(i));
+                }
+            }
+        }
+        bWords.addAll(aWords);
+        Collections.shuffle(bWords);
+        System.out.println(aWords);
     }
-
+//==================================================================================================================
     private Difficulty setDiffculty() {
         boolean loop=true;
         Scanner input=new Scanner(System.in);
