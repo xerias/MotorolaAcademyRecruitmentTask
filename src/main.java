@@ -47,30 +47,10 @@ public class main {
         Collections.shuffle(bWords);
         System.out.println(aWords);
         int cnt; //counts user guesses [0-10] in EASY MODE
-        String[][] result = new String[3][9];
-        result [0][0]=" ";
-        for(int i=1;i<=4;i++) result[0][i]=Integer.toString(i);
-        result[1][0]="A";
-        result[2][0]="B";
-        for(int i=1;i<=4;i++){
-            int length = Math.max(aWords.get(i-1).length(),bWords.get(i-1).length());
-            StringBuilder sb= new StringBuilder(length);
-            sb.append(i);
-            sb.append(new String (new char[length-1]).replace("\0"," "));
-            result[0][i]=sb.toString();
-            sb.replace(0,1,"X");
-            result[1][i]=sb.toString();
-            result[2][i]=sb.toString();
-        }
-        String s="";
-        for(int i=0;i<3;i++){
-            for(int k=0;k<5;k++){
-                s+=result[i][k];
-                s+=" ";
-            }
-            System.out.println(s);
-            s="";
-        }
+
+        Game game1=new Game(aWords,bWords,4);
+        game1.printResult();
+
     }
     //==================================================================================================================
     private Difficulty setDiffculty() {
