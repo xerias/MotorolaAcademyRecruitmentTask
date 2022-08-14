@@ -8,19 +8,14 @@ public class main {
         new main();
     }
 
-    enum Difficulty {
-        EASY,
-        HARD
-    }
+
 //==================================================================================================================
     public main() {
-        Difficulty difficulty = null;
+        int difficulty = 0;
         ArrayList<String> words=null   ;
-        ArrayList<String> aWords=new ArrayList<String>(8); //random words
-        ArrayList<String> bWords=new ArrayList<String>(8); //random words
+
         //String absolutePathtoFile = "C:\\Users\\Dell\\Documents\\Motorola - recruitment task Java\\words.txt";
         String relativePathToFile = "words.txt";
-
         try {
             words = getWordsArray(relativePathToFile);
             System.out.println(words);
@@ -28,32 +23,15 @@ public class main {
             e.printStackTrace();
         }
 
-        difficulty=setDiffculty(); // with user response
-        switch (difficulty) {
-            case EASY:{
-                Collections.shuffle(words);
-                for (int i=0;i<4;i++){
-                    aWords.add(words.get(i));
-                }
-            }break;
-            case HARD:{
-                Collections.shuffle(words);
-                for (int i=0;i<8;i++){
-                    aWords.add(words.get(i));
-                }
-            }
-        }
-        bWords.addAll(aWords);
-        Collections.shuffle(bWords);
-        System.out.println(aWords);
         int cnt; //counts user guesses [0-10] in EASY MODE
 
-        Game game1=new Game(aWords,bWords,4);
+        Game game1=new Game(words,setDiffculty());
         game1.printResult();
-
+        Game game2=new Game(words,setDiffculty());
+        game2.printResult();
     }
     //==================================================================================================================
-    private Difficulty setDiffculty() {
+    private int setDiffculty() {
         boolean loop=true;
         Scanner input=new Scanner(System.in);
         int guess_cnt=0;
@@ -62,11 +40,11 @@ public class main {
             String response=input.nextLine();
             if(response.toLowerCase(Locale.ROOT).equals("easy")) {
                 //----------------------------------------------------------------------------------------------;
-                return Difficulty.EASY;
+                return DIFFICULTY.EASY;
             }else{
                 if(response.toLowerCase(Locale.ROOT).equals("hard")){
                     //------------------------------------------------------------------------------------------;
-                    return Difficulty.HARD;
+                    return DIFFICULTY.HARD;
                 }else{
                     guess_cnt++;
                     if (guess_cnt<2) System.out.println("Not recognized.Try again");
@@ -77,7 +55,7 @@ public class main {
                 }
             }
         }
-        return Difficulty.EASY;
+        return DIFFICULTY.EASY;
     }
 
     ArrayList <String> getWordsArray(String path) throws  IOException {

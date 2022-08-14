@@ -1,22 +1,42 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Game {
-
-
-
     private
     String[][] result;
     String[] A;
     String[] B;
+    ArrayList<String> words;
     private int level; // 4 or 8, easy or hard
     private int score;
     private int attempts;
     private int time;
 
-    public Game(ArrayList<String> aWords,ArrayList<String> bWords,int level){
-            A = aWords.toArray(new String[0]);
-            B = bWords.toArray(new String[0]);
+    public Game(ArrayList<String> words,int level){
+
+        switch (level) {
+            case DIFFICULTY.EASY:{
+                this.words=new ArrayList<String>(4);
+                Collections.shuffle(words);
+                for (int i=0;i<4;i++){
+                    this.words.add(words.get(i));
+                }
+            }break;
+            case DIFFICULTY.HARD:{
+                Collections.shuffle(words);
+                this.words=new ArrayList<String>(8);
+                for (int i=0;i<8;i++){
+                    this.words.add(words.get(i));
+                }
+            }
+        }
+            A = this.words.toArray(new String[0]);
+            Collections.shuffle(this.words);
+            B = this.words.toArray(new String[0]);
+
+            attempts=DIFFICULTY.EASY_ATTEMPTS;
             this.level=level;
+            attempts= level==DIFFICULTY.EASY ? DIFFICULTY.EASY_ATTEMPTS : DIFFICULTY.HARD_ATTEMPTS;
             this.result = new String[3][level+1];
             result [0][0]=" ";
             for(int i=1;i<=level;i++) result[0][i]=Integer.toString(i);
@@ -66,7 +86,7 @@ public class Game {
     public void printResult(){
         String s="";
         for(int i=0;i<3;i++){
-            for(int k=0;k<5;k++){
+            for(int k=0;k<level+1;k++){
                 s+=result[i][k];
                 s+=" ";
             }
@@ -74,7 +94,4 @@ public class Game {
             s="";
         }
     }
-
-
-
 }
