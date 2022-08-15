@@ -152,7 +152,7 @@ public class Game {
     public void cover(String coordinates){
         int i = coordinates.charAt(0) == 'A' ? 1 : 2;
         int pos = getNumericValue(coordinates.charAt(1));
-        System.out.println(dontHavePair(coordinates));
+        //System.out.println(dontHavePair(coordinates));
         if(dontHavePair(coordinates)) gameTable[i][pos]=x_table[i][pos];
 
     }
@@ -184,6 +184,7 @@ public class Game {
                 uncover(cor2); return result=true;
             }else{
                 cover(cor1);
+                cover(cor2);
             }
         }
         return result;

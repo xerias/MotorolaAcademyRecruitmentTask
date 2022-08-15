@@ -1,5 +1,5 @@
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -8,21 +8,30 @@ import java.util.regex.Pattern;
 
 
 
-
 public class main {
     public static void main(String[] args) {
         new main();
     }
 
-
     //==================================================================================================================
     ArrayList<String> words = null;
+    ArrayList<Record> records;
     //String absolutePathtoFile = "C:\\Users\\Dell\\Documents\\Motorola - recruitment task Java\\words.txt";
     String relativePathToFile = "words.txt";
+    String recordsHeader;
 
     public main() {
         Scanner sc=new Scanner(System.in);
         getShuffledWords();
+        records=new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        sb.append("NAME      |");
+        sb.append("DATE          |");
+        sb.append("GUESSING TIME   |");
+        sb.append("GUESSING TRIES");
+        sb.append("\r\n");
+        recordsHeader=sb.toString();
+        getRecords(records);
         Game game = new Game(words, setDiffculty());
 
         while(true){
@@ -37,6 +46,12 @@ public class main {
             break;
         }
         }
+
+
+
+
+
+
     }
 
     //==================================================================================================================
@@ -135,10 +150,51 @@ public class main {
         }
     }
 
+    void getRecords(ArrayList<Record> r){
+        FileWriter fw = null;
+        BufferedWriter bw=null;
+        FileReader fr = null;
+        BufferedReader br = null;
+        File records = new File("Records.txt");
+        if(!records.exists()) {
+            try {
+                records.createNewFile();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                fr = new FileReader(records);
+                br = new BufferedReader(fr);
+                int lcnt=0;
+                String s="";
+                String[] data;
+                while((s=br.readLine())!= null){
+                    lcnt++;
+                    if(lcnt>1){ //got some records
+                        data=s.split("\\|");
+                        //System.out.println(data);
+                        Record record= new Record(data[0].trim(),data[1].trim(),Integer.parseInt(data[2].trim()),Integer.parseInt(data[3].trim()));
+                        r.add(record);
+                    }
+                }
+                br.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    //sort by guessing tries
+       Collections.sort(r,new RecordsAttemptsComparator().
+               thenComparing(new RecordsGuessingTimeComparator()));
+
+    }
     void playGame(Game g){
         LocalDateTime timePt1 = LocalDateTime.now();
         while(g.getAttempts()<g.getAttemptsLimit()) {
-            //g.printAnswers();
+            g.printAnswers();
             String card1, card2;
             String[] pt= new String [1];
             String[] h=new String [1];
@@ -150,24 +206,72 @@ public class main {
             g.printGameTable();
             System.out.println("Give second coordinate");
             card2 = getUserInput(pt, h);
+            g.uncover(card2);
+            g.printGameTable();
             g.increaseAttempts();
             if(g.check(card1, card2)){
                 g.increasePoints();
                 if(g.getScore()==g.getMaxScore()){
-                    System.out.println("Congratulations! You won");
                     break;
                 }
             }
             g.printGameTable();
         }
-        if(g.getScore()<g.getMaxScore()) System.out.println("Unfortunately you have lost. Try again!");
-        //Print Summary
-        g.printGameTable();
         LocalDateTime timePt2 = LocalDateTime.now();
+        g.setTime((int)Duration.between(timePt1,timePt2).getSeconds());
+        if(g.getScore()<g.getMaxScore()) System.out.println("Unfortunately you have lost. Try again!");
+        else System.out.println("Congratulations! You won");
+        g.printGameTable();
+
         System.out.println("Total attempts: "+g.getAttempts());
         System.out.println("Points scored: "+g.getScore());
-        System.out.println("Time played: "+ Duration.between(timePt1,timePt2).getSeconds()+" [s]");
-        System.out.println("Day: "+timePt1.getDayOfMonth()+" Month: "+timePt1.getMonthValue()+ " Year: "+timePt1.getYear());
+        System.out.println("Time played: "+ g.getTime()+" [s]");
+        StringBuilder sb = new StringBuilder();
+        DecimalFormat mFormat = new DecimalFormat("00");
+        sb.append(timePt1.getYear()+"-"+mFormat.format(timePt1.getMonthValue())+"-"+timePt1.getDayOfMonth());
+        System.out.println("Date: "+sb.toString());
+        Record r= new Record(sb.toString(),g.getTime(),g.getAttempts());
+        Comparator comp = new RecordsAttemptsComparator().thenComparing(new RecordsGuessingTimeComparator());
+
+        if( comp.compare(r,records.get(records.size()-1))<0){ // better than last record
+
+                System.out.println("You are in the best 10! Please enter Your name");
+                String name = getUserInput(new String[]{"\\w.{1,10}"},new String[]{"Enter Your name"});
+                if(records.size()>9) records.remove(records.size()-1);
+                r.pName=name;
+                records.add(r);
+                Collections.sort(records,comp);
+        }
+        System.out.println("Top scores table:");
+        System.out.println(recordsHeader);
+        for (Record rr: records){
+            System.out.println(rr.toString());
+        }
+
+        //writing data to file
+        FileWriter fw = null;
+        BufferedWriter bw=null;
+
+        File file = new File("Records.txt");
+        try {
+            fw = new FileWriter(file);
+            bw= new BufferedWriter(fw);
+            bw.write(recordsHeader);
+            for (Record rr: records){
+                bw.write(rr.toString());
+                bw.write("\r\n");
+            }
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+
 
     }
 
