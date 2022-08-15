@@ -47,11 +47,6 @@ public class main {
         }
         }
 
-
-
-
-
-
     }
 
     //==================================================================================================================
@@ -104,22 +99,6 @@ public class main {
         return words;
     }
 
-    String getCoordinate() {
-        boolean correct = false;
-        String input = "";
-        while (!correct) {
-            Scanner sc = new Scanner(System.in);
-            input = sc.nextLine();
-            String cor_pt = "^\\w\\d$";
-            Pattern pt = Pattern.compile(cor_pt);
-            Matcher mt = pt.matcher(input);
-            if (mt.matches()) correct=true;
-            else {
-                System.out.println("Coordinates not recognized. Use Only A or B and digits 1-8");
-            }
-        }
-        return input.toUpperCase(Locale.ROOT);
-    }
     String getUserInput(String[] patterns, String[] hints){
         boolean correct = false;
         String input = "";
@@ -217,6 +196,7 @@ public class main {
             }
             g.printGameTable();
         }
+
         LocalDateTime timePt2 = LocalDateTime.now();
         g.setTime((int)Duration.between(timePt1,timePt2).getSeconds());
         if(g.getScore()<g.getMaxScore()) System.out.println("Unfortunately you have lost. Try again!");
@@ -228,20 +208,12 @@ public class main {
         System.out.println("Time played: "+ g.getTime()+" [s]");
         StringBuilder sb = new StringBuilder();
         DecimalFormat mFormat = new DecimalFormat("00");
-        sb.append(timePt1.getYear()+"-"+mFormat.format(timePt1.getMonthValue())+"-"+timePt1.getDayOfMonth());
-        System.out.println("Date: "+sb.toString());
-        Record r= new Record(sb.toString(),g.getTime(),g.getAttempts());
-        Comparator comp = new RecordsAttemptsComparator().thenComparing(new RecordsGuessingTimeComparator());
+        String date=sb.append(timePt1.getYear()+"-"+mFormat.format(timePt1.getMonthValue())+"-"+timePt1.getDayOfMonth())
+                .toString();
 
-        if( comp.compare(r,records.get(records.size()-1))<0){ // better than last record
+        addNewRecordIfAchieved(date,g);
 
-                System.out.println("You are in the best 10! Please enter Your name");
-                String name = getUserInput(new String[]{"\\w.{1,10}"},new String[]{"Enter Your name"});
-                if(records.size()>9) records.remove(records.size()-1);
-                r.pName=name;
-                records.add(r);
-                Collections.sort(records,comp);
-        }
+
         System.out.println("Top scores table:");
         System.out.println(recordsHeader);
         for (Record rr: records){
@@ -249,6 +221,10 @@ public class main {
         }
 
         //writing data to file
+        saveRecordsToFile();
+
+    }
+    void saveRecordsToFile(){
         FileWriter fw = null;
         BufferedWriter bw=null;
 
@@ -265,14 +241,21 @@ public class main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    void addNewRecordIfAchieved(String date, Game g){
+        Record r= new Record(date,g.getTime(),g.getAttempts());
+        Comparator comp = new RecordsAttemptsComparator().thenComparing(new RecordsGuessingTimeComparator());
 
+        if( comp.compare(r,records.get(records.size()-1))<0){ // better than last record
 
-
-
-
-
-
+            System.out.println("You are in the best 10! Please enter Your name");
+            String name = getUserInput(new String[]{"\\w.{1,10}"},new String[]{"Enter Your name <10 characters"});
+            if(records.size()>9) records.remove(records.size()-1);
+            r.pName=name;
+            records.add(r);
+            Collections.sort(records,comp);
+        }
     }
 
 

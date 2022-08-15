@@ -1,6 +1,7 @@
 NAME      |DATE          |GUESSING TIME   |GUESSING TRIES
-ANITA     |2013-05-07    |22              |3             
-KONRAD    |2013-05-07    |37              |3             
+ANITA     |2013-05-07    |22              |4
+KONRAD    |2013-05-07    |37              |4
+MARCINK   |2022-08-15    |14              |4             
 ZOLZA     |2022-08-15    |20              |4             
 MARCIN    |2022-08-15    |24              |4             
 KASIA     |2013-05-07    |37              |5             

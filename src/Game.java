@@ -18,15 +18,10 @@ public class Game {
     private int attempts;
     private final int attemptsLimit;
     private int time;
-    LocalDateTime date;
-    private String playerName;
-
-    Date dateStart, dateFinish;
-
 
 
     public Game(ArrayList<String> words, int level){
-            dateStart= new java.util.Date();
+
             this.level=level;
             maxScore=level;
             attemptsLimit = level==DIFFICULTY.EASY ? DIFFICULTY.EASY_ATTEMPTS : DIFFICULTY.HARD_ATTEMPTS;
