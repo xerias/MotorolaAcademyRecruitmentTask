@@ -12,25 +12,17 @@ public class main {
     public static void main(String[] args) {
         new main();
     }
-
     //==================================================================================================================
     ArrayList<String> words = null;
     ArrayList<Record> records;
     //String absolutePathtoFile = "C:\\Users\\Dell\\Documents\\Motorola - recruitment task Java\\words.txt";
     String relativePathToFile = "words.txt";
-    String recordsHeader;
+    String recordsHeader="NAME      "+"|DATE          "+"|GUESSING TIME   |"+"GUESSING TRIES"+"\r\n";
 
     public main() {
         Scanner sc=new Scanner(System.in);
         getShuffledWords();
         records=new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("NAME      |");
-        sb.append("DATE          |");
-        sb.append("GUESSING TIME   |");
-        sb.append("GUESSING TRIES");
-        sb.append("\r\n");
-        recordsHeader=sb.toString();
         getRecords(records);
         Game game = new Game(words, setDiffculty());
 
@@ -170,6 +162,7 @@ public class main {
                thenComparing(new RecordsGuessingTimeComparator()));
 
     }
+
     void playGame(Game g){
         LocalDateTime timePt1 = LocalDateTime.now();
         while(g.getAttempts()<g.getAttemptsLimit()) {
@@ -213,7 +206,6 @@ public class main {
 
         addNewRecordIfAchieved(date,g);
 
-
         System.out.println("Top scores table:");
         System.out.println(recordsHeader);
         for (Record rr: records){
@@ -224,6 +216,7 @@ public class main {
         saveRecordsToFile();
 
     }
+
     void saveRecordsToFile(){
         FileWriter fw = null;
         BufferedWriter bw=null;
@@ -257,7 +250,5 @@ public class main {
             Collections.sort(records,comp);
         }
     }
-
-
 }
 
