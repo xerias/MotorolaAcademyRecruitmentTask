@@ -166,7 +166,7 @@ public class main {
     void playGame(Game g){
         LocalDateTime timePt1 = LocalDateTime.now();
         while(g.getAttempts()<g.getAttemptsLimit()) {
-            g.printAnswers();
+            //g.printAnswers();
             String card1, card2;
             String[] pt= new String [1];
             String[] h=new String [1];
